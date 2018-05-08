@@ -1,12 +1,10 @@
 /* global _: false */
 /* global Backbone: false */
-
-/* global ConversationController: false */
-/* global getAccountManager: false */
-/* global i18n: false */
-/* global Signal: false */
-/* global textsecure: false */
 /* global Whisper: false */
+/* global textsecure: false */
+/* global ConversationController: false */
+/* global i18n: false */
+/* global getAccountManager: false */
 
 /* eslint-disable more/no-then */
 
@@ -16,8 +14,8 @@
 
   window.Whisper = window.Whisper || {};
 
-  const { Message: TypedMessage } = Signal.Types;
-  const { deleteAttachmentData } = Signal.Migrations;
+  const { Message: TypedMessage } = window.Signal.Types;
+  const { deleteAttachmentData } = window.Signal.Migrations;
 
   window.Whisper.Message = Backbone.Model.extend({
     database: Whisper.Database,
@@ -33,6 +31,9 @@
       this.on('change:expireTimer', this.setToExpire);
       this.on('unload', this.unload);
       this.setToExpire();
+
+      this.VOICE_FLAG =
+        textsecure.protobuf.AttachmentPointer.Flags.VOICE_MESSAGE;
     },
     idForLogging() {
       return `${this.get('source')}.${this.get('sourceDevice')} ${this.get(
@@ -245,7 +246,8 @@
           });
 
       return Object.assign({}, attachment, {
-        isVoiceMessage: Signal.Types.Attachment.isVoiceMessage(attachment),
+        // eslint-disable-next-line no-bitwise
+        isVoiceMessage: Boolean(attachment.flags & this.VOICE_FLAG),
         thumbnail: thumbnailWithObjectUrl,
       });
     },

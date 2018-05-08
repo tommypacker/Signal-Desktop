@@ -24,4 +24,3 @@ test/test.js
 
 # React / TypeScript
 ts/**/*.js
-ts/protobuf/*.d.ts

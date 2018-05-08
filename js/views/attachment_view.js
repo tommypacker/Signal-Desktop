@@ -5,6 +5,7 @@
 
 /* global i18n: false */
 /* global Signal: false */
+/* global textsecure: false */
 /* global Whisper: false */
 
 // eslint-disable-next-line func-names
@@ -118,7 +119,20 @@
       Signal.Backbone.Views.Lightbox.show(this.lightboxView.el);
     },
     isVoiceMessage() {
-      return Signal.Types.Attachment.isVoiceMessage(this.model);
+      if (
+        // eslint-disable-next-line no-bitwise
+        this.model.flags &
+        textsecure.protobuf.AttachmentPointer.Flags.VOICE_MESSAGE
+      ) {
+        return true;
+      }
+
+      // Support for android legacy voice messages
+      if (this.isAudio() && this.model.fileName === null) {
+        return true;
+      }
+
+      return false;
     },
     isAudio() {
       const { contentType } = this.model;

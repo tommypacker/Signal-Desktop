@@ -7,10 +7,11 @@ dist: trusty
 install:
   - yarn install --frozen-lockfile
 script:
-  - yarn generate
+  - yarn transpile
   - yarn lint
   - yarn test-node
   - yarn nsp check
+  - yarn generate
   - yarn prepare-beta-build
   - $(yarn bin)/build --config.extraMetadata.environment=$SIGNAL_ENV --config.mac.bundleVersion='$TRAVIS_BUILD_NUMBER' --publish=never
   - ./travis.sh

@@ -186,21 +186,17 @@ module.exports = function(grunt) {
       },
     },
     watch: {
-      dist: {
-        files: ['<%= dist.src %>', '<%= dist.res %>'],
-        tasks: ['copy_dist'],
+      sass: {
+        files: ['./stylesheets/*.scss'],
+        tasks: ['sass'],
       },
       libtextsecure: {
         files: ['./libtextsecure/*.js', './libtextsecure/storage/*.js'],
         tasks: ['concat:libtextsecure'],
       },
-      protobuf: {
-        files: ['./protos/SignalService.proto'],
-        tasks: ['exec:build-protobuf'],
-      },
-      sass: {
-        files: ['./stylesheets/*.scss'],
-        tasks: ['sass'],
+      dist: {
+        files: ['<%= dist.src %>', '<%= dist.res %>'],
+        tasks: ['copy_dist'],
       },
       scripts: {
         files: ['<%= jshint.files %>'],
@@ -220,10 +216,7 @@ module.exports = function(grunt) {
         cmd: 'tx pull',
       },
       transpile: {
-        cmd: 'yarn transpile',
-      },
-      'build-protobuf': {
-        cmd: 'yarn build-protobuf',
+        cmd: 'npm run transpile',
       },
     },
     'test-release': {
@@ -506,11 +499,10 @@ module.exports = function(grunt) {
   grunt.registerTask('copy_dist', ['gitinfo', 'copy:res', 'copy:src']);
   grunt.registerTask('date', ['gitinfo', 'getExpireTime']);
   grunt.registerTask('default', [
-    'exec:build-protobuf',
-    'exec:transpile',
     'concat',
     'copy:deps',
     'sass',
     'date',
+    'exec:transpile',
   ]);
 };
